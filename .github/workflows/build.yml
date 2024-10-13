@@ -22,7 +22,7 @@ jobs:
     - name: 'Install packages'
       run: 'vmshell pkgman install -y haiku_devel make makefile_engine gcc gcc_syslibs multimarkdown'
     - name: 'Reboot VM'
-      run: 'sv force-restart qemu ||:; timeout 600 vmshell exit 0'
+      run: 'sleep 60; sv force-restart qemu ||:; timeout 600 vmshell exit 0'
     - name: 'Checkout project'
       uses: 'actions/checkout@v4'
     - name: 'Copy project to VM'
