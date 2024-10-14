@@ -12,20 +12,22 @@ jobs:
     runs-on: 'ubuntu-latest'
     container: 'docker.io/hectorm/qemu-haiku:latest'
     steps:
-    - name: 'Setup tmate session'
-      uses: 'mxschmitt/action-tmate@v3'
-      with:
-        limit-access-to-actor: true
-        sudo: false
-    # - name: 'Wait until the VM is ready'
-    #   run: 'container-init & timeout 600 vmshell exit 0'
-    # - name: 'Install packages'
-    #   run: 'vmshell pkgman install -y haiku_devel make makefile_engine gcc gcc_syslibs multimarkdown'
-    # - name: 'Reboot VM'
-    #   run: 'sv force-restart qemu ||:; timeout 600 vmshell exit 0'
-    # - name: 'Checkout project'
-    #   uses: 'actions/checkout@v4'
-    # - name: 'Copy project to VM'
-    #   run: 'vmshell mkdir ./src/; tar -cf - ./ | vmshell tar -xf - -C ./src/'
-    # - name: 'Build project'
-    #   run: 'vmshell make BUILDHOME=\`finddir B_SYSTEM_DEVELOP_DIRECTORY\` -C ./src/'
+    # - name: 'Setup tmate session'
+    #   uses: 'mxschmitt/action-tmate@v3'
+    #   with:
+    #     limit-access-to-actor: true
+    #     sudo: false
+    - name: 'Fix'
+      run: 'sed -i "s|,thread=single||" /etc/service/qemu/run'
+    - name: 'Wait until the VM is ready'
+      run: 'container-init & timeout 600 vmshell exit 0'
+    - name: 'Install packages'
+      run: 'vmshell pkgman install -y haiku_devel make makefile_engine gcc gcc_syslibs multimarkdown'
+    - name: 'Reboot VM'
+      run: 'sv force-restart qemu ||:; timeout 600 vmshell exit 0'
+    - name: 'Checkout project'
+      uses: 'actions/checkout@v4'
+    - name: 'Copy project to VM'
+      run: 'vmshell mkdir ./src/; tar -cf - ./ | vmshell tar -xf - -C ./src/'
+    - name: 'Build project'
+      run: 'vmshell make BUILDHOME=\`finddir B_SYSTEM_DEVELOP_DIRECTORY\` -C ./src/'
