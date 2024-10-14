@@ -17,14 +17,12 @@ jobs:
     #   with:
     #     limit-access-to-actor: true
     #     sudo: false
-    - name: 'Fix'
-      run: 'sed -i "s|,thread=single||" /etc/service/qemu/run'
     - name: 'Wait until the VM is ready'
       run: 'container-init & timeout 600 vmshell exit 0'
     - name: 'Install packages'
       run: 'vmshell pkgman install -y haiku_devel make makefile_engine gcc gcc_syslibs multimarkdown'
     - name: 'Reboot VM'
-      run: 'sv force-restart qemu ||:; timeout 600 vmshell exit 0'
+      run: 'vmshell sync; sv force-restart qemu ||:; timeout 600 vmshell exit 0'
     - name: 'Checkout project'
       uses: 'actions/checkout@v4'
     - name: 'Copy project to VM'
